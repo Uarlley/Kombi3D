@@ -44,7 +44,9 @@ void draw() {
   ambientLight(80, 100, 110);
   //spotLight(255, 255, 255, mouseX, mouseY, 2000, 0, 0, -1, 2, 10000);
   directionalLight(255, 255, 126, 1, 1, 0);
+  
   camera();
+  
   texts();
   
   if(orthographic) ortho();
@@ -92,7 +94,7 @@ void draw() {
     } else {
       fill(#6ADDFF, 70);
       box(290+log(pow(i, 14)), expessura, 190 + log(pow(i, 4)));
-    }
+  }
 
     translate(0, expessura, 0);
   }
@@ -329,7 +331,6 @@ void mouseWheel(MouseEvent event) {
 void cylinder(float bottom, float top, float h, int sides)
 {
   pushMatrix();
-
   translate(0, h/2, 0);
 
   float angle;
@@ -345,7 +346,6 @@ void cylinder(float bottom, float top, float h, int sides)
     x[i] = sin(angle) * bottom;
     z[i] = cos(angle) * bottom;
   }
-
   for (int i=0; i < x.length; i++) {
     angle = TWO_PI / (sides) * i;
     x2[i] = sin(angle) * top;
@@ -365,17 +365,14 @@ void cylinder(float bottom, float top, float h, int sides)
 
   //draw the center of the cylinder
   beginShape(QUAD_STRIP); 
-
   for (int i=0; i < x.length; i++) {
     vertex(x[i], -h/2, z[i]);
     vertex(x2[i], h/2, z2[i]);
   }
-
   endShape();
 
   //draw the top of the cylinder
   beginShape(TRIANGLE_FAN); 
-
   vertex(0, h/2, 0);
 
   for (int i=0; i < x.length; i++) {
@@ -383,7 +380,6 @@ void cylinder(float bottom, float top, float h, int sides)
   }
 
   endShape();
-
   popMatrix();
 }
 
@@ -548,7 +544,6 @@ void keyPressed() {
 }
 
 void texts(){
-    
   textSize(18);
   fill(#FFFFFF);
   if(headlight==true) text("Farol Ligado - (f/F)", 10, 30);
@@ -560,8 +555,8 @@ void texts(){
   if(rArrow==true) text("Seta à Direita do Motorista Ligada - (->)", 10, 90);
   else text("Seta à Direita do Motorista Desligada  - (->)", 10, 90);
   if(rArrow==true && lArrow==true) text("Pisca Alerta Ligado  - (a/A)", 10, 110);
-  else text("Pisca Alerta Desligado  - (a/A)", 10, 110);
+  else text("Pisca Alerta Desligado - (a/A)", 10, 110);
   if(orthographic==true) text("Projeção Ortográfica Ligada - (o/O)", 10, 130);
   else text("Projeção Perspectiva Ligada - (o/O)", 10, 130);
-  text("\nMovimento da câmera: \n Scroll (controle de distância de visão) \n Mouse1(Camera), \n Mouse2 (Altura da câmera) \n", 10, 150);
+  text("\nMovimento da câmera: \nScroll (controle de distância de visão)\nMouse1 (Câmera) \nMouse2 (Altura da câmera) \n", 10, 150);
 }
