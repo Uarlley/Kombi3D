@@ -29,6 +29,7 @@ float cameraRotateY;
 float cameraSpeed;
 float t3;
 float t4;
+float t5;
 float angle;
 float expessura = 0.8;
 float volume = 0.05;
@@ -39,7 +40,6 @@ void setup() {
   motor = new SoundFile(this, "Ligando.mp3");
   buzina = new SoundFile(this, "audioZap.mp3");
   acelerador = new SoundFile(this, "acelerando.mp3");
-  
   cameraRotateX = -PI/6;
   cameraRotateY = 0;
   cameraSpeed = TWO_PI / width;
@@ -79,6 +79,7 @@ void draw() {
     rotateY(-cameraRotateX);
     rotateX(+cameraRotateY);
     t4 += (pmouseY - mouseY)/2;
+    t5 += (pmouseX - mouseX)/2;
     translate(0, t4, 0);
   } else {
     translate(0, t4, 0);
@@ -626,16 +627,15 @@ void keyPressed() {
   
   // Acelerate
   if( (key == 'z' || key == 'Z') && lMotor==true && earViewValue == false) acelerador.play();
-  
-  
 }
+
 
 void texts(){
   textSize(18);
   fill(#FFFFFF);
   if(headlight==true) text("Farol Ligado - (f/F)", 10, 30);
   else text("Farol Desligado - (f/F)", 10, 30);
-  if(lMotor==true) text("Motor Ligado - (m/M)", 10, 50);
+  if(lMotor==true) text("Motor Ligado - (m/M para Desligar ou z/Z para acelerar)", 10, 50);
   else text("Motor Desligado - (m/M)", 10, 50);
   if(lArrow==true) text("Seta à Esquerda do Motorista Ligada - (<-)", 10, 70);
   else text("Seta à Esquerda do Motorista Desligada - (<-)", 10, 70);
