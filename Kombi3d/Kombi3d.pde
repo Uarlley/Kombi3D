@@ -12,10 +12,12 @@ boolean earView = false;
 boolean retracting = true;
 boolean wiping = false;
 boolean orthographic = false;
+
 int ArrowDelay = 0;
 int x = -50;
 int y = -75; 
 int tothe = 0;
+int velocityMode = 1;
 
 float theta; 
 float wipersVelocity = 30;
@@ -304,20 +306,20 @@ void draw() {
   // wipers
   
   pushMatrix();
-    //left wiper
+    // right wiper
     fill(0);
     translate(-130, 2, -130);
     rotateY(2*QUARTER_PI);
-    rotateZ(-QUARTER_PI + theta);
+    rotateZ(-QUARTER_PI+0.1 + theta);
     box(2, 95, 2);
   popMatrix();
   
   pushMatrix();
-    //right wiper
+    // left wiper
     fill(0);
     translate(-130, 2, -26);
     rotateY(2*QUARTER_PI);
-    rotateZ(-QUARTER_PI + theta);
+    rotateZ(-QUARTER_PI+0.1 + theta);
     box(2, 95, 2);
   popMatrix();
   
@@ -332,6 +334,11 @@ void draw() {
        if(theta < -PI/2 + 0.8) tothe = 0;
       }
   }
+  
+  // earViewrs
+  pushMatrix();
+  
+  popMatrix();
 }
 
 
@@ -549,6 +556,16 @@ void keyPressed() {
   if((key == 'l' || key == 'L') && wiping == true) wiping = false;
   else if((key == 'l' || key == 'L') && wiping == false) wiping = true;
   
+  // wipersVelocity
+  if((key=='v' || key=='V') && wiping==true && velocityMode==1){
+    wipersVelocity=15;
+    velocityMode=2;
+  }
+  else if((key=='v' || key=='V') && wiping==true && velocityMode==2){
+    wipersVelocity=30;
+    velocityMode=1;
+  }
+  
   // Projections
   if((key == 'o' || key == 'O') && orthographic == true) orthographic = false;
   else if((key == 'o' || key == 'O') && orthographic == false) orthographic = true;
@@ -570,5 +587,16 @@ void texts(){
   else text("Pisca Alerta Desligado - (a/A)", 10, 110);
   if(orthographic==true) text("Projeção Ortográfica Ligada - (o/O)", 10, 130);
   else text("Projeção Perspectiva Ligada - (o/O)", 10, 130);
-  text("\nMovimento da câmera: \nScroll (controle de distância de visão)\nMouse1 (Câmera) \nMouse2 (Altura da câmera) \n", 10, 150);
+  if(wiping==true) text("Limpador de Parabrisa Ligado - (l/L)", 10, 150);
+  else text("Limpador de Parabrisa Desligado - (l/L)", 10, 150);
+  if(earView==true) text("Retrovisor Liberado - (r/R)", 10, 170);
+  else text("Retrovisor Retraído - (r/R)", 10, 170);
+  if(wiping==true){
+    if(velocityMode==1)
+      text("Velocidade de rotação 1x - (v/V)", 10, 190);
+    if(velocityMode==2)
+      text("Velocidade de rotação 2x - (v/V)", 10, 190);
+  }
+  
+  text("\nMovimento da câmera: \nScroll (controle de distância de visão)\nMouse1 (Câmera) \nMouse2 (Altura da câmera) \n", 10, 210);
 }
