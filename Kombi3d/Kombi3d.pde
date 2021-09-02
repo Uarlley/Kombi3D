@@ -18,6 +18,7 @@ int y = -75;
 int tothe = 0;
 
 float theta; 
+float wipersVelocity = 30;
 float newX = x, newY = y;
 float cameraRotateX;
 float cameraRotateY;
@@ -89,13 +90,18 @@ void draw() {
   translate(0, -190, 0);
   for (int i = 0; i<240; i++) {    
     if (i<=30 || i>=110) {
-      fill(#00DE35);
+      if(i<=10) fill(#FFFFFF);
+      else fill(#00DE35);
       box(300+log(pow(i, 14)), expessura, 195 + log(pow(i, 4)));
-    } else {
+    }
+    else if(i>30 && i<110){
       fill(#6ADDFF, 70);
       box(290+log(pow(i, 14)), expessura, 190 + log(pow(i, 4)));
-  }
-
+    }
+    if (i>=120 && i<=130) {
+      fill(#FFFFFF);
+      box(300+log(pow(i, 14)), expessura, 195 + log(pow(i, 4)));
+    }
     translate(0, expessura, 0);
   }
   popMatrix();
@@ -287,8 +293,8 @@ void draw() {
   popMatrix();
 
   // logo
-  pushMatrix();
-    translate(-50, -100, 80);
+  translate(-50, -100, 80);
+  pushMatrix(); 
     translate(-155, -110, -270); 
     rotateY(HALF_PI+3.2);
     scale(0.4);
@@ -297,27 +303,36 @@ void draw() {
   
   // wipers
   pushMatrix();
-    //left wiper
-    translate(-600, 0, 0);
-    line(0, 0, newX, newY);
-    fill(#000000);
-    ellipse(0,0,7,7);
-    //right wiper
-    translate(280, 0);
-    ellipse(0,0,7,7);
-    line(0, 0, newX, newY);
+    fill(0);
+    translate(-128, -26, -130);
     
+    translate(-145, 0, -80);
+    rotateY(2*QUARTER_PI);
+ 
+    //beginShape(QUADS);
+    //  vertex(newX, newY);
+    //  vertex(newX, newY-2);
+    //  vertex(0, -2);
+    //  vertex(0, 0);
+    //endShape();
+    
+    translate(0, 35, 135);
+    rotateZ(QUARTER_PI+theta);
+    box(2, 80, 2);
+                                             ///////////////////////////////////////// parei aqui
     if(wiping == true){
-    newX = x*cos(theta)- y*sin(theta);
-    newY = x*sin(theta)+ y*cos(theta);
-    if(theta < PI/2 + 0.55 && tothe == 0) {
-      theta = theta + PI/15;
-      if(theta > PI/2 + 0.55) tothe = 1;
-    }
-    if (tothe == 1) {
-      theta = theta - PI/15;
-      if(theta < -PI/2 + 0.8) tothe = 0;
-    }
+    //  newX = x*cos(theta)- y*sin(theta);
+    //  newY = x*sin(theta)+ y*cos(theta);
+      //if(theta < PI/2 + 0.55 && tothe == 0) {
+       //theta = theta + PI/wipersVelocity;
+       theta+=0.2;
+        if(theta > PI/2 + 0.55) tothe = 1;
+      }
+      if (tothe == 1) {
+        theta-=0.2;
+    //    theta = theta - PI/wipersVelocity;
+        //if(theta < -PI/2 + 0.8) tothe = 0;
+    //  }
   }
   popMatrix();
 }
