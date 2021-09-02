@@ -1,8 +1,7 @@
-import java.io.PrintStream;
-import java.io.OutputStream;
 import processing.sound.*;
 SoundFile motor;
 SoundFile buzina;
+SoundFile acelerador;
 
 boolean lMotor = false;
 boolean headlight = false;
@@ -12,6 +11,7 @@ boolean earView = false;
 boolean retracting = true;
 boolean wiping = false;
 boolean orthographic = false;
+boolean earViewValue = false;
 
 int ArrowDelay = 0;
 int x = -50;
@@ -19,6 +19,8 @@ int y = -75;
 int tothe = 0;
 int velocityMode = 1;
 
+float xEarViewRetract = 0;
+float yEarViewRetract = 0;
 float theta; 
 float wipersVelocity = 30;
 float newX = x, newY = y;
@@ -29,16 +31,22 @@ float t3;
 float t4;
 float angle;
 float expessura = 0.8;
+float volume = 0.05;
+
 
 void setup() { 
   size(1000, 1000, P3D);
   motor = new SoundFile(this, "Ligando.mp3");
   buzina = new SoundFile(this, "audioZap.mp3");
+  acelerador = new SoundFile(this, "acelerando.mp3");
+  
   cameraRotateX = -PI/6;
   cameraRotateY = 0;
   cameraSpeed = TWO_PI / width;
   t3 = 0;
   t4 = 0;
+  motor.amp(volume);
+  acelerador.amp(volume);
 }
 
 void draw() {
@@ -57,8 +65,6 @@ void draw() {
   translate(width/2+30, height/2, t3/7);
   if (mousePressed && mouseButton==LEFT) {
     cameraRotateX += (pmouseX - mouseX) * cameraSpeed;
-    //cameraRotateY += (pmouseY - mouseY) * cameraSpeed;
-    //cameraRotateX = constrain(cameraRotateX, -PI, 0);
     cameraRotateY = constrain(cameraRotateY, -PI/8, 0);
     rotateY(-cameraRotateX);
     rotateX(-cameraRotateY);
@@ -194,39 +200,37 @@ void draw() {
 
   // back right little headLights
   pushMatrix();
-  fill(#A00000, 90);
-  rotateX(PI);
-  if (rArrow == true && ArrowDelay<=10) stroke(#A00000);
-  else noStroke();
-  translate(0, +360, 0);
-  cylinder(5, 10, 10, 15); 
-  sphere(14);
-  popMatrix();
-
-
-  // headLights
-  if (headlight==true) stroke(#FAA158);
-  else noStroke();
+    fill(#A00000, 90);
+    rotateX(PI);
+    if (rArrow == true && ArrowDelay<=10) stroke(#A00000);
+    else noStroke();
+    translate(0, +360, 0);
+    cylinder(5, 10, 10, 15); 
+    sphere(14);
+    popMatrix();
   
-  fill(#FAA158);
-  translate(-40, 0, -15);
-  cylinder(5, 12, 10, 15);
-  fill(#FAA158, 90);
-  sphere(14);
-
-  fill(#FAA158);
-  translate(0, 0, 170);
-  cylinder(5, 12, 10, 15);
-  fill(#FAA158, 90);
-  sphere(14); 
-
-  if (ArrowDelay == 20) ArrowDelay = 0;
-  ArrowDelay++;
-
+    // headLights
+    if (headlight==true) stroke(#FAA158);
+    else noStroke();  
+    fill(#FAA158);
+    translate(-40, 0, -15);
+    cylinder(5, 12, 10, 15);
+    fill(#FAA158, 90);
+    sphere(14);
+  
+    fill(#FAA158);
+    translate(0, 0, 170);
+    cylinder(5, 12, 10, 15);
+    fill(#FAA158, 90);
+    sphere(14); 
+  
+    if (ArrowDelay == 20) ArrowDelay = 0;
+    ArrowDelay++;
   popMatrix();
 
 
   // friso
+  // central friso
   noStroke();
   fill(#CBCBCB);
   pushMatrix();
@@ -235,14 +239,14 @@ void draw() {
   box(5, 65, 5);
   popMatrix();
 
+  // left frisos
   pushMatrix();
   translate(-173, -134, 102);
   rotate(QUARTER_PI-0.65);
   rotateX(QUARTER_PI-0.75);
   box(5, 65, 5);
   popMatrix();
-
-  //right frisos
+  
   pushMatrix();
   translate(-60, -134, 99.5);
   rotate(QUARTER_PI-0.8);
@@ -265,14 +269,16 @@ void draw() {
   popMatrix();
 
 
+  
+
+  // right frisos
   pushMatrix();
-  translate(-173, -134, -99.5);
+  translate(-173, -134, -102);
   rotate(QUARTER_PI-0.65);
   rotateX(QUARTER_PI-0.82);
   box(5, 65, 5);
   popMatrix();
-
-  //left frisos
+  
   pushMatrix();
   translate(-60, -134, -102);
   rotate(QUARTER_PI-0.8);
@@ -293,6 +299,7 @@ void draw() {
   rotateX(QUARTER_PI-0.82);
   box(10, 65, 5);
   popMatrix();
+  
 
   // logo
   translate(-50, -100, 80);
@@ -308,18 +315,20 @@ void draw() {
   pushMatrix();
     // right wiper
     fill(0);
-    translate(-130, 2, -130);
+    translate(-128, 2, -130);
     rotateY(2*QUARTER_PI);
     rotateZ(-QUARTER_PI+0.1 + theta);
+    rotateX(-0.03);
     box(2, 95, 2);
   popMatrix();
-  
+
   pushMatrix();
     // left wiper
     fill(0);
-    translate(-130, 2, -26);
+    translate(-128, 2, -26);
     rotateY(2*QUARTER_PI);
     rotateZ(-QUARTER_PI+0.1 + theta);
+    rotateX(-0.03);
     box(2, 95, 2);
   popMatrix();
   
@@ -337,7 +346,46 @@ void draw() {
   
   // earViewrs
   pushMatrix();
-  
+    pushMatrix();
+      // left earViwer
+      fill(#FFFFFF);
+      translate(-120, -20+xEarViewRetract, 15-yEarViewRetract);
+      rotateX(-QUARTER_PI);
+      box(4, 50, 4);
+      rotateX(QUARTER_PI);
+      rotateZ(HALF_PI);
+      translate(-20, -4, 20);
+      noStroke();
+      cylinder(10, 10, 5, 40);
+    popMatrix();
+    
+    pushMatrix();
+      // right earViwer
+      fill(#FFFFFF);
+      translate(-120, -20+xEarViewRetract, -175+yEarViewRetract);
+      rotateX(QUARTER_PI);
+      box(4, 50, 4);
+      rotateX(QUARTER_PI);
+      rotateZ(HALF_PI);
+      translate(-20, -4, 20);
+      noStroke();
+      cylinder(10, 10, 5, 40);
+    popMatrix();
+    
+    if(earView == true){
+      if(retracting == true){
+        xEarViewRetract += 1;
+        yEarViewRetract += 0.5;
+      }
+      else{
+        xEarViewRetract -= 1;
+        yEarViewRetract -= 0.5;
+      }
+      if((xEarViewRetract >= 20 && retracting == true) || (xEarViewRetract <= 0 && retracting == false) ){
+        retracting = !retracting;
+        earView = false;
+      }
+    }
   popMatrix();
 }
 
@@ -570,6 +618,16 @@ void keyPressed() {
   if((key == 'o' || key == 'O') && orthographic == true) orthographic = false;
   else if((key == 'o' || key == 'O') && orthographic == false) orthographic = true;
   
+  // EarViewers
+  if( (key == 'r' || key == 'R') && earView == false) earView = true;
+  else if((key == 'r' || key == 'R') && earView == true) earView = false; 
+  if( (key == 'r' || key == 'R') && earViewValue == false) earViewValue = true;
+  else if((key == 'r' || key == 'R') && earViewValue == true) earViewValue = false;
+  
+  // Acelerate
+  if( (key == 'z' || key == 'Z') && lMotor==true && earViewValue == false) acelerador.play();
+  
+  
 }
 
 void texts(){
@@ -589,7 +647,7 @@ void texts(){
   else text("Projeção Perspectiva Ligada - (o/O)", 10, 130);
   if(wiping==true) text("Limpador de Parabrisa Ligado - (l/L)", 10, 150);
   else text("Limpador de Parabrisa Desligado - (l/L)", 10, 150);
-  if(earView==true) text("Retrovisor Liberado - (r/R)", 10, 170);
+  if(earViewValue==false) text("Retrovisor Liberado - (r/R)", 10, 170);
   else text("Retrovisor Retraído - (r/R)", 10, 170);
   if(wiping==true){
     if(velocityMode==1)
