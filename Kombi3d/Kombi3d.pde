@@ -302,39 +302,36 @@ void draw() {
   popMatrix();
   
   // wipers
+  
   pushMatrix();
+    //left wiper
     fill(0);
-    translate(-128, -26, -130);
-    
-    translate(-145, 0, -80);
+    translate(-130, 2, -130);
     rotateY(2*QUARTER_PI);
- 
-    //beginShape(QUADS);
-    //  vertex(newX, newY);
-    //  vertex(newX, newY-2);
-    //  vertex(0, -2);
-    //  vertex(0, 0);
-    //endShape();
-    
-    translate(0, 35, 135);
-    rotateZ(QUARTER_PI+theta);
-    box(2, 80, 2);
-                                             ///////////////////////////////////////// parei aqui
-    if(wiping == true){
-    //  newX = x*cos(theta)- y*sin(theta);
-    //  newY = x*sin(theta)+ y*cos(theta);
-      //if(theta < PI/2 + 0.55 && tothe == 0) {
-       //theta = theta + PI/wipersVelocity;
-       theta+=0.2;
+    rotateZ(-QUARTER_PI + theta);
+    box(2, 95, 2);
+  popMatrix();
+  
+  pushMatrix();
+    //right wiper
+    fill(0);
+    translate(-130, 2, -26);
+    rotateY(2*QUARTER_PI);
+    rotateZ(-QUARTER_PI + theta);
+    box(2, 95, 2);
+  popMatrix();
+  
+  if(wiping == true){
+      if(theta < PI/2 + 0.55 && tothe == 0) {
+         theta = theta + PI/wipersVelocity;
+       
         if(theta > PI/2 + 0.55) tothe = 1;
       }
       if (tothe == 1) {
-        theta-=0.2;
-    //    theta = theta - PI/wipersVelocity;
-        //if(theta < -PI/2 + 0.8) tothe = 0;
-    //  }
+       theta = theta - PI/wipersVelocity;
+       if(theta < -PI/2 + 0.8) tothe = 0;
+      }
   }
-  popMatrix();
 }
 
 
