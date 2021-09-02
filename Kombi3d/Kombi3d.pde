@@ -2,6 +2,7 @@ import processing.sound.*;
 SoundFile motor;
 SoundFile buzina;
 SoundFile acelerador;
+SoundFile partida;
 
 boolean lMotor = false;
 boolean headlight = false;
@@ -29,17 +30,17 @@ float cameraRotateY;
 float cameraSpeed;
 float t3;
 float t4;
-float t5;
 float angle;
 float expessura = 0.8;
 float volume = 0.05;
 
 
 void setup() { 
-  size(1000, 1000, P3D);
+  size(1280, 720, P3D);
   motor = new SoundFile(this, "Ligando.mp3");
   buzina = new SoundFile(this, "audioZap.mp3");
   acelerador = new SoundFile(this, "acelerando.mp3");
+  partida = new SoundFile(this, "partida.mp3");
   cameraRotateX = -PI/6;
   cameraRotateY = 0;
   cameraSpeed = TWO_PI / width;
@@ -47,22 +48,19 @@ void setup() {
   t4 = 0;
   motor.amp(volume);
   acelerador.amp(volume);
+  partida.amp(volume*8);
+  buzina.amp(volume/2);
 }
 
 void draw() {
   
   background(#343434);
   ambientLight(80, 100, 110);
-  //spotLight(255, 255, 255, mouseX, mouseY, 2000, 0, 0, -1, 2, 10000);
   directionalLight(255, 255, 126, 1, 1, 0);
-  
-  camera();
-  
   texts();
-  
   if(orthographic) ortho();
   else perspective();
-  translate(width/2+30, height/2, t3/7);
+  translate(width/2+30, height/2+50, 100+t3/7);
   if (mousePressed && mouseButton==LEFT) {
     cameraRotateX += (pmouseX - mouseX) * cameraSpeed;
     cameraRotateY = constrain(cameraRotateY, -PI/8, 0);
@@ -79,7 +77,6 @@ void draw() {
     rotateY(-cameraRotateX);
     rotateX(+cameraRotateY);
     t4 += (pmouseY - mouseY)/2;
-    t5 += (pmouseX - mouseX)/2;
     translate(0, t4, 0);
   } else {
     translate(0, t4, 0);
@@ -93,9 +90,7 @@ void draw() {
 
   fill(#A7A6A6);
   noStroke();
-
   pushMatrix();
-
   translate(0, -190, 0);
   for (int i = 0; i<240; i++) {    
     if (i<=30 || i>=110) {
@@ -120,8 +115,7 @@ void draw() {
   translate(0, -4, 0);
   box(380, 8, 220);
   popMatrix();
-
-
+  
   pushMatrix();
   noStroke();
   for (int i = 0; i<8; i=i+1) {
@@ -269,9 +263,6 @@ void draw() {
   box(10, 65, 10);
   popMatrix();
 
-
-  
-
   // right frisos
   pushMatrix();
   translate(-173, -134, -102);
@@ -408,7 +399,6 @@ void cylinder(float bottom, float top, float h, int sides)
   float[] x2 = new float[sides+1];
   float[] z2 = new float[sides+1];
 
-
   for (int i=0; i < x.length; i++) {
     angle = TWO_PI / (sides) * i;
     x[i] = sin(angle) * bottom;
@@ -467,7 +457,6 @@ void logo() {
   arc(487, 390, 140, 100, PI-0.50, TWO_PI+2.1);
   popMatrix();
 
-
   //inside the logo
   pushMatrix();
   translate(0, 0, 2);
@@ -478,7 +467,6 @@ void logo() {
   fill(#45FC4C);
   ellipse(487, 390, 110, 77);
   popMatrix();
-
 
   //phone
   translate(0, 0, 3);
@@ -558,6 +546,7 @@ void logo() {
 void keyPressed() {
   //Motor
   if ((key == 'm' || key == 'M') && lMotor == false) {
+    partida.play();
     motor.play();
     lMotor = true;
   } else if ((key == 'm' || key == 'M') && lMotor == true) {
@@ -631,7 +620,7 @@ void keyPressed() {
 
 
 void texts(){
-  textSize(18);
+  textSize(14);
   fill(#FFFFFF);
   if(headlight==true) text("Farol Ligado - (f/F)", 10, 30);
   else text("Farol Desligado - (f/F)", 10, 30);
@@ -651,9 +640,9 @@ void texts(){
   else text("Retrovisor Retraído - (r/R)", 10, 170);
   if(wiping==true){
     if(velocityMode==1)
-      text("Velocidade de rotação 1x - (v/V)", 10, 190);
+      text("Velocidade de rotação do Limpador 1x - (v/V)", 10, 190);
     if(velocityMode==2)
-      text("Velocidade de rotação 2x - (v/V)", 10, 190);
+      text("Velocidade de rotação do Limpador 2x - (v/V)", 10, 190);
   }
   
   text("\nMovimento da câmera: \nScroll (controle de distância de visão)\nMouse1 (Câmera) \nMouse2 (Altura da câmera) \n", 10, 210);
